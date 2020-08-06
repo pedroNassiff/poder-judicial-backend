@@ -7,7 +7,7 @@ var jwt = require("jsonwebtoken")
 var bcrypt = require("bcryptjs")
 
 exports.signup = (req, res) => {
-  
+  console.log("llegaste pillin");
   const user = new User({
     username: req.body.username,
     email: req.body.email,
@@ -65,7 +65,7 @@ exports.signup = (req, res) => {
 
 exports.signin = (req, res) => {
   User.findOne({
-    username: req.body.username
+    email: req.body.email
   })
     .populate("roles", "-__v")
     .exec((err, user) => {
@@ -75,7 +75,7 @@ exports.signin = (req, res) => {
       }
 
       if (!user) {
-        return res.status(404).send({ message: "El nombre de usuario no existe." })
+        return res.send({ message: "El nombre de usuario no existe." })
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -84,7 +84,7 @@ exports.signin = (req, res) => {
       )
 
       if (!passwordIsValid) {
-        return res.status(401).send({
+        return res.send({
           accessToken: null,
           message: "Clave incorrecta" 
         })
